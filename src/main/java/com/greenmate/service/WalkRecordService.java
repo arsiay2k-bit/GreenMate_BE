@@ -18,8 +18,9 @@ public class WalkRecordService {
     
     private final WalkRecordRepository walkRecordRepository;
     
-    public WalkRecord saveWalkRecord(WalkRecordRequest request) {
+    public WalkRecord saveWalkRecord(WalkRecordRequest request, com.greenmate.entity.User user) {
         WalkRecord walkRecord = WalkRecord.builder()
+                .user(user)
                 .startLatitude(request.getStartLatitude())
                 .startLongitude(request.getStartLongitude())
                 .startAddress(request.getStartAddress())

@@ -19,6 +19,10 @@ public class WalkRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+    
     @Column(name = "start_latitude", nullable = false)
     private Double startLatitude;
     

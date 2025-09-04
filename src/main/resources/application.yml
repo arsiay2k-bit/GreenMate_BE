@@ -20,6 +20,23 @@ spring:
     console:
       enabled: true
       path: /h2-console
+      
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            scope:
+              - email
+              - profile
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+            user-name-attribute: sub
 
 server:
   port: 8080
@@ -41,3 +58,13 @@ management:
   endpoint:
     health:
       show-details: always
+
+# JWT 설정
+jwt:
+  secret: ${JWT_SECRET:greenmate-secret-key-for-jwt-token-generation-very-long-secret-key-at-least-256-bits}
+  expiration: 86400000  # 24 hours
+
+# OAuth2 리다이렉트 설정
+app:
+  oauth2:
+    authorizedRedirectUri: ${OAUTH2_REDIRECT_URI:http://localhost:3000/oauth2/redirect}
