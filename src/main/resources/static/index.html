@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenMate API Test</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 GreenMate API Test</h1>
+            <p>GreenMate 백엔드 API 테스트 도구</p>
+        </header>
+
+        <!-- Authentication Section -->
+        <section class="section" id="auth-section">
+            <h2>🔐 인증</h2>
+            <div class="auth-status">
+                <p id="auth-status-text">로그인 상태: <span id="login-status">로그아웃됨</span></p>
+                <div id="user-info" style="display: none;"></div>
+            </div>
+            
+            <!-- 회원가입 폼 -->
+            <div id="signup-form" class="auth-form">
+                <h3>📝 회원가입</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>이메일:</label>
+                        <input type="email" id="signup-email" placeholder="user@example.com" class="input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>패스워드:</label>
+                        <input type="password" id="signup-password" placeholder="최소 8자, 대소문자+숫자+특수문자" class="input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>패스워드 확인:</label>
+                        <input type="password" id="signup-confirm-password" placeholder="패스워드 재입력" class="input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>닉네임:</label>
+                        <input type="text" id="signup-nickname" placeholder="2-20자" class="input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>성별:</label>
+                        <select id="signup-gender" class="input" required>
+                            <option value="">선택하세요</option>
+                            <option value="MALE">남성</option>
+                            <option value="FEMALE">여성</option>
+                            <option value="OTHER">기타</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>나이:</label>
+                        <input type="number" id="signup-age" placeholder="만 14세 이상" class="input" min="14" max="120" required>
+                    </div>
+                </div>
+                <button onclick="signup()" class="btn btn-primary">회원가입</button>
+            </div>
+            
+            <!-- 로그인 폼 -->
+            <div id="login-form" class="auth-form">
+                <h3>🔑 로그인</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>이메일:</label>
+                        <input type="email" id="login-email" placeholder="user@example.com" class="input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>패스워드:</label>
+                        <input type="password" id="login-password" placeholder="패스워드 입력" class="input" required>
+                    </div>
+                </div>
+                <button onclick="login()" class="btn btn-success">로그인</button>
+            </div>
+            
+            <!-- 인증된 사용자용 버튼들 -->
+            <div id="authenticated-actions" class="button-group" style="display: none;">
+                <button onclick="getCurrentUser()" class="btn">현재 사용자 정보</button>
+                <button onclick="refreshToken()" class="btn">토큰 갱신</button>
+                <button onclick="logout()" class="btn btn-danger">로그아웃</button>
+            </div>
+        </section>
+
+        <!-- Location Search Section -->
+        <section class="section">
+            <h2>📍 위치 검색</h2>
+            <div class="form-group">
+                <input type="text" id="location-query" placeholder="검색할 위치 (예: 강남)" class="input">
+                <button onclick="searchLocations()" class="btn">위치 검색</button>
+                <button onclick="getAutocomplete()" class="btn">자동완성</button>
+            </div>
+            <div class="result-box">
+                <h4>결과:</h4>
+                <pre id="location-results"></pre>
+            </div>
+        </section>
+
+        <!-- Route Search Section -->
+        <section class="section">
+            <h2>🚶‍♂️ 경로 검색</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>출발지 위도:</label>
+                    <input type="number" id="start-lat" placeholder="37.5663" step="any" class="input">
+                </div>
+                <div class="form-group">
+                    <label>출발지 경도:</label>
+                    <input type="number" id="start-lng" placeholder="126.9997" step="any" class="input">
+                </div>
+                <div class="form-group">
+                    <label>출발지 주소:</label>
+                    <input type="text" id="start-address" placeholder="서울시청" class="input">
+                </div>
+                <div class="form-group">
+                    <label>목적지 위도:</label>
+                    <input type="number" id="end-lat" placeholder="37.5636" step="any" class="input">
+                </div>
+                <div class="form-group">
+                    <label>목적지 경도:</label>
+                    <input type="number" id="end-lng" placeholder="126.9866" step="any" class="input">
+                </div>
+                <div class="form-group">
+                    <label>목적지 주소:</label>
+                    <input type="text" id="end-address" placeholder="명동" class="input">
+                </div>
+            </div>
+            <button onclick="searchRoutes()" class="btn btn-primary">경로 검색</button>
+            <div class="result-box">
+                <h4>결과:</h4>
+                <pre id="route-results"></pre>
+            </div>
+        </section>
+
+        <!-- Walk Record Section -->
+        <section class="section">
+            <h2>📊 걸음 기록 (로그인 필요)</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>출발지 위도:</label>
+                    <input type="number" id="record-start-lat" placeholder="37.5663" step="any" class="input">
+                </div>
+                <div class="form-group">
+                    <label>출발지 경도:</label>
+                    <input type="number" id="record-start-lng" placeholder="126.9997" step="any" class="input">
+                </div>
+                <div class="form-group">
+                    <label>출발지 주소:</label>
+                    <input type="text" id="record-start-address" placeholder="서울시청" class="input">
+                </div>
+                <div class="form-group">
+                    <label>목적지 위도:</label>
+                    <input type="number" id="record-end-lat" placeholder="37.5636" step="any" class="input">
+                </div>
+                <div class="form-group">
+                    <label>목적지 경도:</label>
+                    <input type="number" id="record-end-lng" placeholder="126.9866" step="any" class="input">
+                </div>
+                <div class="form-group">
+                    <label>목적지 주소:</label>
+                    <input type="text" id="record-end-address" placeholder="명동" class="input">
+                </div>
+                <div class="form-group">
+                    <label>거리 (km):</label>
+                    <input type="number" id="record-distance" placeholder="1.43" step="0.01" class="input">
+                </div>
+                <div class="form-group">
+                    <label>소요 시간 (분):</label>
+                    <input type="number" id="record-duration" placeholder="28" class="input">
+                </div>
+                <div class="form-group">
+                    <label>걸음 수:</label>
+                    <input type="number" id="record-steps" placeholder="1789" class="input">
+                </div>
+                <div class="form-group">
+                    <label>경로 타입:</label>
+                    <select id="record-route-type" class="input">
+                        <option value="LESS_WALK">Less Walk</option>
+                        <option value="RECOMMENDED">Recommended</option>
+                        <option value="MORE_WALK">More Walk</option>
+                    </select>
+                </div>
+            </div>
+            <div class="button-group">
+                <button onclick="saveWalkRecord()" class="btn btn-primary">걸음 기록 저장</button>
+                <button onclick="getUserWalkRecords()" class="btn">내 걸음 기록</button>
+                <button onclick="getUserStatistics()" class="btn">내 통계</button>
+                <button onclick="getRecentRecords()" class="btn">최근 기록</button>
+            </div>
+            <div class="result-box">
+                <h4>결과:</h4>
+                <pre id="walk-results"></pre>
+            </div>
+        </section>
+
+        <!-- System Info Section -->
+        <section class="section">
+            <h2>🔧 시스템 정보</h2>
+            <div class="button-group">
+                <button onclick="getHealth()" class="btn">시스템 상태</button>
+                <button onclick="clearResults()" class="btn btn-secondary">결과 지우기</button>
+            </div>
+            <div class="result-box">
+                <h4>결과:</h4>
+                <pre id="system-results"></pre>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+[Unit]
+Description=GreenMate Backend Service
+After=network.target
+StartLimitBurst=3
+StartLimitIntervalSec=60
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+WorkingDirectory=/greenmate
+ExecStart=/usr/bin/java -Xmx512m -Xms256m -jar /greenmate/GreenMate_BE-0.0.1-SNAPSHOT.jar
+ExecStop=/bin/kill -15 $MAINPID
+KillMode=process
+TimeoutStopSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=greenmate-backend
+
+# 환경변수 설정
+Environment="JAVA_OPTS=-Xmx512m -Xms256m"
+Environment="SPRING_PROFILES_ACTIVE=prod"
+Environment="SERVER_PORT=8080"
+
+# 리소스 제한
+MemoryLimit=1G
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

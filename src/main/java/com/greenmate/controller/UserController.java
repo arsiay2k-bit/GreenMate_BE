@@ -32,9 +32,10 @@ public class UserController {
         Map<String, Object> profile = new HashMap<>();
         profile.put("id", user.getId());
         profile.put("email", user.getEmail());
-        profile.put("name", user.getName());
-        profile.put("picture", user.getPicture());
-        profile.put("provider", user.getProvider());
+        profile.put("nickname", user.getNickname());
+        profile.put("gender", user.getGender());
+        profile.put("age", user.getAge());
+        profile.put("role", user.getRole());
         profile.put("createdAt", user.getCreatedAt());
         
         return ResponseEntity.ok(profile);
