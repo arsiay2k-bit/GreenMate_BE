@@ -47,7 +47,12 @@ cd GreenMate_BE
 
 ## 🌐 API 엔드포인트
 
-서버 실행 후 `http://localhost:8080`에서 접근 가능
+로컬 서버: `http://localhost:8080`  
+운영 서버: `http://103.244.108.70`
+
+### 사용자 인증
+- `POST /auth/signup` - 사용자 회원가입
+- `POST /auth/login` - 사용자 로그인
 
 ### 경로 추천
 - `POST /api/routes/search` - 3가지 경로 옵션 조회
@@ -55,6 +60,18 @@ cd GreenMate_BE
 ### 위치 검색
 - `GET /api/locations/search?query={검색어}` - 위치 검색
 - `GET /api/locations/autocomplete?query={검색어}&limit={개수}` - 자동완성
+
+### 걷기 네비게이션
+- `GET /api/walk/nearby-routes` - 주변 걷기 경로 조회
+- `POST /api/walk/start-session` - 걷기 세션 시작
+- `PUT /api/walk/sessions/{id}/progress` - 진행률 업데이트
+- `POST /api/walk/sessions/{id}/complete` - 걷기 완료
+
+### ESG 활동
+- `GET /api/esg/dashboard` - ESG 대시보드 정보
+- `GET /api/esg/challenges` - 참여 가능한 챌린지
+- `GET /api/esg/leaderboard` - 리더보드
+- `POST /api/esg/challenges/{id}/participate` - 챌린지 참여
 
 ### 걸음 기록
 - `POST /api/walk-records` - 걸음 기록 저장

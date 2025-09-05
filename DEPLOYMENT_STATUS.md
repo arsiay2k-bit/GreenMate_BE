@@ -1,80 +1,46 @@
-# 🚨 GreenMate Backend 배포 상태
+# 🎉 GreenMate Backend 배포 완료
 
 ## 현재 상황
 - ✅ **GitHub 저장소**: 모든 배포 스크립트 업로드 완료
-- ✅ **서버 접속**: 103.244.108.70 서버 접속 가능
+- ✅ **서버 접속**: 103.244.108.70 서버 접속 가능 (SSH 키 인증)
 - ✅ **웹사이트**: 프론트엔드 웹사이트 정상 실행 중
-- ❌ **백엔드 API**: 아직 배포되지 않음 (404 에러)
+- ✅ **백엔드 API**: 배포 완료 및 정상 작동
 
-## 📋 배포 필요 작업
+## ✅ 배포 완료된 구성
 
-**서버 103.244.108.70에 SSH 로그인 후 다음 명령어 실행:**
+### 서버 환경
+- **서버**: 103.244.108.70
+- **OS**: CentOS/RHEL
+- **Java**: OpenJDK 21
+- **Web Server**: Nginx (리버스 프록시)
+- **서비스 관리**: SystemD
 
-### 1단계: 저장소 준비
+### 배포된 서비스
+- **Backend API**: Java Spring Boot 애플리케이션 (포트 8080)
+- **Nginx Proxy**: 외부 접근을 위한 리버스 프록시 (포트 80)
+- **SystemD Service**: `greenmate-backend` 서비스로 자동 시작/관리
+
+### 현재 동작 중인 API 테스트 결과
 ```bash
-ssh root@103.244.108.70
-# 패스워드: hlihli1!
+# Health Check - 정상 작동 ✅
+curl http://103.244.108.70/actuator/health
 
-mkdir -p /greenmate
-cd /greenmate
+# Walking Routes API - 정상 작동 ✅
+curl "http://103.244.108.70/api/walk/nearby-routes?lat=37.5665&lng=126.9784&radius=1000"
+
+# ESG Dashboard API - 정상 작동 ✅
+curl http://103.244.108.70/api/esg/dashboard
 ```
 
-### 2단계: 소스코드 다운로드
-```bash
-# 기존 저장소가 있으면 삭제
-if [ -d "GreenMate_BE" ]; then rm -rf GreenMate_BE; fi
+## 🎯 운영 중인 서비스 URL
 
-# 최신 코드 클론
-git clone https://github.com/mhsssshin/GreenMate_BE.git
-cd GreenMate_BE
-
-# 실행 권한 부여
-chmod +x deploy/*.sh
-```
-
-### 3단계: 자동 배포 실행
-```bash
-# 원클릭 배포 (모든 것을 한번에)
-bash deploy/install.sh
-```
-
-**또는 개별 단계로 실행:**
-```bash
-# 서버 환경 설정
-bash deploy/setup-server.sh
-
-# SystemD 서비스 설정
-bash deploy/setup-systemd.sh
-
-# Nginx 리버스 프록시 설정
-bash deploy/setup-nginx.sh
-
-# 애플리케이션 배포
-cd /greenmate
-bash deploy.sh
-```
-
-### 4단계: 배포 확인
-```bash
-# 서비스 상태 확인
-systemctl status greenmate-backend
-
-# 로그 확인
-journalctl -u greenmate-backend -n 20
-
-# API 테스트
-curl http://localhost:8080/actuator/health
-curl "http://localhost:8080/api/walk/nearby-routes?lat=37.5665&lng=126.9784&radius=1000"
-```
-
-## 🎯 배포 완료 후 예상 결과
-
-배포가 성공하면 다음 URL들이 모두 작동합니다:
-- **웹사이트**: http://103.244.108.70 ✅ (이미 작동)
-- **백엔드 API**: http://103.244.108.70/api/
-- **Health Check**: http://103.244.108.70/actuator/health
-- **ESG API**: http://103.244.108.70/api/esg/dashboard
-- **Walking API**: http://103.244.108.70/api/walk/nearby-routes
+현재 모든 URL이 정상적으로 작동하고 있습니다:
+- **웹사이트**: http://103.244.108.70 ✅
+- **백엔드 API**: http://103.244.108.70/api/ ✅
+- **Health Check**: http://103.244.108.70/actuator/health ✅
+- **ESG API**: http://103.244.108.70/api/esg/dashboard ✅
+- **Walking API**: http://103.244.108.70/api/walk/nearby-routes ✅
+- **Authentication API**: http://103.244.108.70/auth/signup, /auth/login ✅
 
 ## 🔧 문제 해결
 

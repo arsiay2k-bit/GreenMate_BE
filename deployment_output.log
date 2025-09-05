@@ -1,0 +1,9 @@
+==========================================
+    GreenMate Backend 배포 파이프라인
+    서버: 103.244.108.70
+==========================================
+1단계: 서버 초기 설정 실행...
+=== GreenMate Backend 서버 설정 시작 ===
+1. 시스템 업데이트 및 필요 패키지 설치...
+/greenmate/GreenMate_BE/deploy/setup-server.sh: line 13: apt: command not found
+/greenmate/GreenMate_BE/deploy/setup-server.sh: line 14: apt: command not found
