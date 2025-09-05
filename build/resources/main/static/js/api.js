@@ -1,5 +1,5 @@
 // API 기본 설정
-const API_BASE = 'http://localhost:8080';
+const API_BASE = window.location.origin;
 let authToken = localStorage.getItem('authToken');
 
 // API 요청 헬퍼 함수
