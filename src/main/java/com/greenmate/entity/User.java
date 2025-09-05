@@ -49,6 +49,27 @@ public class User {
     @NotNull(message = "나이는 필수 입력 항목입니다")
     private Integer age;
     
+    @Column(nullable = true)
+    private Double height;
+    
+    @Column(nullable = true)
+    private Double weight;
+    
+    @Column(nullable = true)
+    private Integer dailyStepsRecommendation;
+    
+    @Column(nullable = true)
+    private Double dailyCaloriesBurnRecommendation;
+    
+    @Column(nullable = true)
+    private Integer dailyWalkingTimeRecommendation;
+    
+    @Column(nullable = true, length = 1000)
+    private String personalizedRecommendations;
+    
+    @Column(nullable = true)
+    private LocalDateTime recommendationsUpdatedAt;
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;

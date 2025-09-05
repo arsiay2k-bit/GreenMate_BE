@@ -3,6 +3,7 @@ package com.greenmate.controller;
 import com.greenmate.entity.User;
 import com.greenmate.entity.WalkRecord;
 import com.greenmate.repository.WalkRecordRepository;
+import com.greenmate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class UserController {
     
     private final WalkRecordRepository walkRecordRepository;
+    private final UserService userService;
     
     @GetMapping("/profile")
     public ResponseEntity<?> getUserProfile() {
@@ -35,8 +37,19 @@ public class UserController {
         profile.put("nickname", user.getNickname());
         profile.put("gender", user.getGender());
         profile.put("age", user.getAge());
+        profile.put("height", user.getHeight());
+        profile.put("weight", user.getWeight());
         profile.put("role", user.getRole());
         profile.put("createdAt", user.getCreatedAt());
+        
+        // 개인맞춤형 걸음 수 추천 정보 추가
+        Map<String, Object> recommendations = new HashMap<>();
+        recommendations.put("dailySteps", user.getDailyStepsRecommendation());
+        recommendations.put("dailyCaloriesBurn", user.getDailyCaloriesBurnRecommendation());
+        recommendations.put("dailyWalkingTimeMinutes", user.getDailyWalkingTimeRecommendation());
+        recommendations.put("personalizedAdvice", user.getPersonalizedRecommendations());
+        recommendations.put("updatedAt", user.getRecommendationsUpdatedAt());
+        profile.put("stepRecommendations", recommendations);
         
         return ResponseEntity.ok(profile);
     }
@@ -85,6 +98,47 @@ public class UserController {
             user, startDate);
         
         return ResponseEntity.ok(records);
+    }
+    
+    @PostMapping("/refresh-recommendations")
+    public ResponseEntity<?> refreshStepRecommendations() {
+        User user = getCurrentUser();
+        if (user == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        
+        try {
+            User updatedUser = userService.refreshStepRecommendations(user.getId());
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "걸음 수 추천 정보가 업데이트되었습니다.");
+            response.put("dailySteps", updatedUser.getDailyStepsRecommendation());
+            response.put("dailyCaloriesBurn", updatedUser.getDailyCaloriesBurnRecommendation());
+            response.put("dailyWalkingTimeMinutes", updatedUser.getDailyWalkingTimeRecommendation());
+            response.put("personalizedAdvice", updatedUser.getPersonalizedRecommendations());
+            response.put("updatedAt", updatedUser.getRecommendationsUpdatedAt());
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("추천 정보 업데이트 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+    
+    @GetMapping("/recommendations")
+    public ResponseEntity<?> getStepRecommendations() {
+        User user = getCurrentUser();
+        if (user == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        
+        Map<String, Object> recommendations = new HashMap<>();
+        recommendations.put("dailySteps", user.getDailyStepsRecommendation());
+        recommendations.put("dailyCaloriesBurn", user.getDailyCaloriesBurnRecommendation());
+        recommendations.put("dailyWalkingTimeMinutes", user.getDailyWalkingTimeRecommendation());
+        recommendations.put("personalizedAdvice", user.getPersonalizedRecommendations());
+        recommendations.put("updatedAt", user.getRecommendationsUpdatedAt());
+        
+        return ResponseEntity.ok(recommendations);
     }
     
     private User getCurrentUser() {

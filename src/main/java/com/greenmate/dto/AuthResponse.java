@@ -19,8 +19,32 @@ public class AuthResponse {
     private String nickname;
     private User.Gender gender;
     private Integer age;
+    private Double height;
+    private Double weight;
+    private StepRecommendationInfo stepRecommendations;
+    
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StepRecommendationInfo {
+        private Integer dailySteps;
+        private Double dailyCaloriesBurn;
+        private Integer dailyWalkingTimeMinutes;
+        private String personalizedAdvice;
+    }
     
     public static AuthResponse from(String accessToken, User user) {
+        StepRecommendationInfo recommendations = null;
+        if (user.getDailyStepsRecommendation() != null) {
+            recommendations = StepRecommendationInfo.builder()
+                    .dailySteps(user.getDailyStepsRecommendation())
+                    .dailyCaloriesBurn(user.getDailyCaloriesBurnRecommendation())
+                    .dailyWalkingTimeMinutes(user.getDailyWalkingTimeRecommendation())
+                    .personalizedAdvice(user.getPersonalizedRecommendations())
+                    .build();
+        }
+        
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .tokenType("Bearer")
@@ -29,6 +53,9 @@ public class AuthResponse {
                 .nickname(user.getNickname())
                 .gender(user.getGender())
                 .age(user.getAge())
+                .height(user.getHeight())
+                .weight(user.getWeight())
+                .stepRecommendations(recommendations)
                 .build();
     }
 }

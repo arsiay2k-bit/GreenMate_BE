@@ -31,4 +31,12 @@ public class SignUpRequest {
     @Min(value = 14, message = "만 14세 이상만 가입 가능합니다")
     @Max(value = 120, message = "올바른 나이를 입력해주세요")
     private Integer age;
+    
+    @DecimalMin(value = "50.0", message = "키는 50cm 이상이어야 합니다")
+    @DecimalMax(value = "250.0", message = "키는 250cm 이하여야 합니다")
+    private Double height;
+    
+    @DecimalMin(value = "10.0", message = "몸무게는 10kg 이상이어야 합니다") 
+    @DecimalMax(value = "500.0", message = "몸무게는 500kg 이하여야 합니다")
+    private Double weight;
 }

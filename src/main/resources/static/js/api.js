@@ -63,6 +63,8 @@ async function signup() {
     const nickname = document.getElementById('signup-nickname').value.trim();
     const gender = document.getElementById('signup-gender').value;
     const age = parseInt(document.getElementById('signup-age').value);
+    const height = document.getElementById('signup-height').value ? parseFloat(document.getElementById('signup-height').value) : null;
+    const weight = document.getElementById('signup-weight').value ? parseFloat(document.getElementById('signup-weight').value) : null;
 
     // 클라이언트 사이드 검증
     if (!email || !password || !confirmPassword || !nickname || !gender || !age) {
@@ -85,13 +87,26 @@ async function signup() {
         return;
     }
 
+    // 키와 몸무게 범위 검증 (입력된 경우에만)
+    if (height && (height < 50 || height > 250)) {
+        displayResult('auth', '키는 50-250cm 사이로 입력해주세요.', 'error');
+        return;
+    }
+
+    if (weight && (weight < 10 || weight > 500)) {
+        displayResult('auth', '몸무게는 10-500kg 사이로 입력해주세요.', 'error');
+        return;
+    }
+
     const signupData = {
         email: email,
         password: password,
         confirmPassword: confirmPassword,
         nickname: nickname,
         gender: gender,
-        age: age
+        age: age,
+        height: height,
+        weight: weight
     };
 
     try {
@@ -376,6 +391,37 @@ async function getRecentRecords() {
     }
 }
 
+// 걸음 수 추천 API
+async function getStepRecommendations() {
+    if (!authToken) {
+        displayResult('recommendations', '로그인이 필요합니다.', 'error');
+        return;
+    }
+
+    try {
+        const recommendations = await apiRequest('/api/users/recommendations');
+        displayResult('recommendations', recommendations);
+    } catch (error) {
+        displayResult('recommendations', error.message, 'error');
+    }
+}
+
+async function refreshStepRecommendations() {
+    if (!authToken) {
+        displayResult('recommendations', '로그인이 필요합니다.', 'error');
+        return;
+    }
+
+    try {
+        const response = await apiRequest('/api/users/refresh-recommendations', {
+            method: 'POST'
+        });
+        displayResult('recommendations', response, 'success');
+    } catch (error) {
+        displayResult('recommendations', error.message, 'error');
+    }
+}
+
 // 시스템 정보 API
 async function getHealth() {
     try {
@@ -394,6 +440,8 @@ function clearSignupForm() {
     document.getElementById('signup-nickname').value = '';
     document.getElementById('signup-gender').value = '';
     document.getElementById('signup-age').value = '';
+    document.getElementById('signup-height').value = '';
+    document.getElementById('signup-weight').value = '';
 }
 
 function clearLoginForm() {

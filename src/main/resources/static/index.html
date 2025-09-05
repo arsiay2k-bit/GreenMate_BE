@@ -54,6 +54,14 @@
                         <label>나이:</label>
                         <input type="number" id="signup-age" placeholder="만 14세 이상" class="input" min="14" max="120" required>
                     </div>
+                    <div class="form-group">
+                        <label>키 (cm):</label>
+                        <input type="number" id="signup-height" placeholder="예: 170" class="input" min="50" max="250" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>몸무게 (kg):</label>
+                        <input type="number" id="signup-weight" placeholder="예: 65" class="input" min="10" max="500" step="0.1">
+                    </div>
                 </div>
                 <button onclick="signup()" class="btn btn-primary">회원가입</button>
             </div>
@@ -77,8 +85,23 @@
             <!-- 인증된 사용자용 버튼들 -->
             <div id="authenticated-actions" class="button-group" style="display: none;">
                 <button onclick="getCurrentUser()" class="btn">현재 사용자 정보</button>
+                <button onclick="getStepRecommendations()" class="btn">걸음 수 추천 정보</button>
+                <button onclick="refreshStepRecommendations()" class="btn">추천 정보 갱신</button>
                 <button onclick="refreshToken()" class="btn">토큰 갱신</button>
                 <button onclick="logout()" class="btn btn-danger">로그아웃</button>
+            </div>
+        </section>
+
+        <!-- Step Recommendations Section -->
+        <section class="section">
+            <h2>🏃‍♂️ 개인맞춤형 걸음 수 추천 (로그인 필요)</h2>
+            <div class="button-group">
+                <button onclick="getStepRecommendations()" class="btn btn-primary">추천 정보 조회</button>
+                <button onclick="refreshStepRecommendations()" class="btn">추천 정보 갱신</button>
+            </div>
+            <div class="result-box">
+                <h4>결과:</h4>
+                <pre id="recommendations-results"></pre>
             </div>
         </section>
 

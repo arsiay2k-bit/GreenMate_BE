@@ -31,7 +31,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> signup(@RequestBody SignUpRequest signUpRequest) {
         try {
             User user = userService.createUser(signUpRequest);
             String token = jwtUtil.generateJwtToken(user.getEmail(), user.getId());
@@ -49,7 +49,7 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
             User user = userService.findByEmail(loginRequest.getEmail());
             

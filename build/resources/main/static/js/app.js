@@ -101,6 +101,8 @@ function displayResult(section, data, type = 'success') {
         'location': 'location-results',
         'route': 'route-results', 
         'walk': 'walk-results',
+        'walk-nav': 'walk-nav-results',
+        'esg': 'esg-results',
         'system': 'system-results'
     };
     
@@ -191,7 +193,7 @@ function showNotification(message, type = 'info') {
 
 // 모든 결과 지우기
 function clearResults() {
-    const resultIds = ['location-results', 'route-results', 'walk-results', 'system-results'];
+    const resultIds = ['location-results', 'route-results', 'walk-results', 'walk-nav-results', 'esg-results', 'system-results'];
     
     resultIds.forEach(id => {
         const element = document.getElementById(id);
@@ -202,6 +204,94 @@ function clearResults() {
     });
     
     showNotification('모든 결과가 지워졌습니다.', 'info');
+}
+
+// 걷기 네비게이션 함수들
+async function getNearbyRoutes() {
+    const lat = document.getElementById('walk-lat').value;
+    const lng = document.getElementById('walk-lng').value;
+    const radius = document.getElementById('walk-radius').value;
+    
+    if (!lat || !lng) {
+        displayResult('walk-nav', '위도와 경도를 입력해주세요.', 'error');
+        return;
+    }
+    
+    try {
+        const response = await apiCall(`/api/walk/nearby-routes?lat=${lat}&lng=${lng}&radius=${radius || 1000}`, 'GET');
+        displayResult('walk-nav', response, 'success');
+    } catch (error) {
+        displayResult('walk-nav', `오류: ${error.message}`, 'error');
+    }
+}
+
+async function startWalkSession() {
+    const lat = document.getElementById('walk-lat').value;
+    const lng = document.getElementById('walk-lng').value;
+    
+    if (!lat || !lng) {
+        displayResult('walk-nav', '위도와 경도를 입력해주세요.', 'error');
+        return;
+    }
+    
+    try {
+        const requestData = {
+            startLatitude: parseFloat(lat),
+            startLongitude: parseFloat(lng),
+            routeType: 'RECOMMENDED'
+        };
+        
+        const response = await apiCall('/api/walk/start-session', 'POST', requestData);
+        displayResult('walk-nav', response, 'success');
+    } catch (error) {
+        displayResult('walk-nav', `오류: ${error.message}`, 'error');
+    }
+}
+
+async function getWalkSessionProgress() {
+    try {
+        const response = await apiCall('/api/walk/sessions/1/progress', 'GET');
+        displayResult('walk-nav', response, 'success');
+    } catch (error) {
+        displayResult('walk-nav', `오류: ${error.message}`, 'error');
+    }
+}
+
+// ESG 활동 함수들
+async function getESGDashboard() {
+    try {
+        const response = await apiCall('/api/esg/dashboard', 'GET');
+        displayResult('esg', response, 'success');
+    } catch (error) {
+        displayResult('esg', `오류: ${error.message}`, 'error');
+    }
+}
+
+async function getESGChallenges() {
+    try {
+        const response = await apiCall('/api/esg/challenges', 'GET');
+        displayResult('esg', response, 'success');
+    } catch (error) {
+        displayResult('esg', `오류: ${error.message}`, 'error');
+    }
+}
+
+async function getESGLeaderboard() {
+    try {
+        const response = await apiCall('/api/esg/leaderboard', 'GET');
+        displayResult('esg', response, 'success');
+    } catch (error) {
+        displayResult('esg', `오류: ${error.message}`, 'error');
+    }
+}
+
+async function getESGRewards() {
+    try {
+        const response = await apiCall('/api/esg/rewards', 'GET');
+        displayResult('esg', response, 'success');
+    } catch (error) {
+        displayResult('esg', `오류: ${error.message}`, 'error');
+    }
 }
 
 // 유틸리티 함수들
